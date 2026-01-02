@@ -61,13 +61,11 @@ jobs:
             echo "Checking if old application is running..."
             if pgrep -f simpoint_enterprise > /dev/null; then
               echo "Stopping old application..."
-              pkill -f simpoint_enterprise
+              pkill -f simpoint_enterprise || true
               sleep 3
             else
               echo "No running application found"
             fi
-
             echo "Starting new application..."
             nohup java -jar /home/Backend_simpoint/simpoint_backend/simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar > /home/Backend_simpoint/simpoint_backend/simpoint/target/app.log 2>&1 &
-
             echo "Application deployed successfully!"
