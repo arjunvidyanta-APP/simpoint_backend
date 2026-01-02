@@ -1,5 +1,6 @@
 name: Auto Deploy to VPS
 
+# Trigger workflow on push to main branch
 on:
   push:
     branches:
@@ -28,37 +29,38 @@ jobs:
 
       # 4️. Ensure VPS folder exists before copying
       - name: Create target folder on VPS
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
           script: |
+            echo "Creating target folder if not exists..."
             mkdir -p /home/Backend_simpoint/simpoint_backend/simpoint/target
+            chown -R root:root /home/Backend_simpoint/simpoint_backend/simpoint
 
       # 5️. Copy the JAR to VPS
       - name: Copy JAR to VPS
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
           source: "simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar"
           target: "/home/Backend_simpoint/simpoint_backend/simpoint/target/"
           overwrite: true
 
       # 6️. Restart Spring Boot application
       - name: Restart Simpoint Backend on VPS
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@master
         with:
-          host: ${{   secrets.VPS_HOST }}
+          host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
           script: |
-            echo "Stopping old application..."
+            echo "Stopping old application if running..."
             pkill -f simpoint_enterprise || true
-
+            sleep 3
             echo "Starting new application..."
             nohup java -jar /home/Backend_simpoint/simpoint_backend/simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar > /home/Backend_simpoint/simpoint_backend/simpoint/target/app.log 2>&1 &
-
-            echo " Application deployed successfully"
+            echo "Application deployed successfully!"
