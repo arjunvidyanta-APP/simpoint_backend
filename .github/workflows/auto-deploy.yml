@@ -11,23 +11,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️. Checkout your code from GitHub
+      # 1. Checkout your code from GitHub
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️. Setup Java (JDK 21)
+      # 2. Setup Java (JDK 21)
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      # 3️. Build the JAR inside your project folder
+      # 3. Build the JAR inside your project folder
       - name: Build JAR with Maven
         working-directory: simpoint
         run: mvn clean package -DskipTests
 
-      # 4️. Ensure VPS folder exists before copying
+      # 4. Ensure VPS folder exists before copying
       - name: Create target folder on VPS
         uses: appleboy/ssh-action@master
         with:
@@ -39,7 +39,7 @@ jobs:
             mkdir -p /home/Backend_simpoint/simpoint_backend/simpoint/target
             chown -R root:root /home/Backend_simpoint/simpoint_backend/simpoint
 
-      # 5️. Copy the JAR to VPS
+      # 5. Copy the JAR to VPS
       - name: Copy JAR to VPS
         uses: appleboy/scp-action@master
         with:
@@ -50,28 +50,26 @@ jobs:
           target: "/home/Backend_simpoint/simpoint_backend/simpoint/target/"
           overwrite: true
 
-   # 6️. Restart Spring Boot application safely
-- name: Restart Simpoint Backend on VPS
-  uses: appleboy/ssh-action@master
-  with:
-    host: ${{ secrets.VPS_HOST }}
-    username: ${{ secrets.VPS_USER }}
-    key: ${{ secrets.VPS_PRIVATE_KEY }}
-    script: |
-      echo "Checking if old application is running..."
-      if pgrep -f simpoint_enterprise > /dev/null; then
-        echo "Stopping old application..."
-        pkill -f simpoint_enterprise || true
-        sleep 3
-      else
-        echo "No running application found"
-      fi
+      # 6. Restart Spring Boot application safely
+      - name: Restart Simpoint Backend on VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            echo "Checking if old application is running..."
+            if pgrep -f simpoint_enterprise > /dev/null; then
+              echo "Stopping old application..."
+              pkill -f simpoint_enterprise || true
+              sleep 3
+            else
+              echo "No running application found"
+            fi
 
-      echo "Starting new application..."
-      nohup java -jar /home/Backend_simpoint/simpoint_backend/simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar \
-        > /home/Backend_simpoint/simpoint_backend/simpoint/target/app.log 2>&1 &
+            echo "Starting new application..."
+            nohup java -jar /home/Backend_simpoint/simpoint_backend/simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar \
+              > /home/Backend_simpoint/simpoint_backend/simpoint/target/app.log 2>&1 &
 
-      echo "Application deployed successfully!"
-
-      # Important: exit 0 to avoid SSH action failure
-      exit 0
+            echo "Application deployed successfully!"
+            exit 0   # ✅ Important: prevent SSH action from failing
