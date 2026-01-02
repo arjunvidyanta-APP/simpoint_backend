@@ -50,7 +50,7 @@ jobs:
           target: "/home/Backend_simpoint/simpoint_backend/simpoint/target/"
           overwrite: true
 
-      # 6️. Restart Spring Boot application
+      # 6️. Restart Spring Boot application safely
       - name: Restart Simpoint Backend on VPS
         uses: appleboy/ssh-action@master
         with:
@@ -58,9 +58,16 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           script: |
-            echo "Stopping old application if running..."
-            pkill -f simpoint_enterprise || true
-            sleep 3
+            echo "Checking if old application is running..."
+            if pgrep -f simpoint_enterprise > /dev/null; then
+              echo "Stopping old application..."
+              pkill -f simpoint_enterprise
+              sleep 3
+            else
+              echo "No running application found"
+            fi
+
             echo "Starting new application..."
             nohup java -jar /home/Backend_simpoint/simpoint_backend/simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar > /home/Backend_simpoint/simpoint_backend/simpoint/target/app.log 2>&1 &
+
             echo "Application deployed successfully!"
