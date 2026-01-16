@@ -1,0 +1,64 @@
+name: Auto Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️. Checkout your code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️. Setup Java (JDK 21)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # 3️. Build the JAR inside your project folder
+      - name: Build JAR with Maven
+        working-directory: simpoint
+        run: mvn clean package -DskipTests
+
+      # 4️. Ensure VPS folder exists before copying
+      - name: Create target folder on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            mkdir -p /home/Backend_simpoint/simpoint_backend/simpoint/target
+
+      # 5️. Copy the JAR to VPS
+      - name: Copy JAR to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          source: "simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar"
+          target: "/home/Backend_simpoint/simpoint_backend/simpoint/target/"
+          overwrite: true
+
+      # 6️. Restart Spring Boot application
+      - name: Restart Simpoint Backend on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{   secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            echo "Stopping old application..."
+            pkill -f simpoint_enterprise || true
+
+            echo "Starting new application..."
+            nohup java -jar /home/Backend_simpoint/simpoint_backend/simpoint/target/simpoint_enterprise-0.0.1-SNAPSHOT.jar > /home/Backend_simpoint/simpoint_backend/simpoint/target/app.log 2>&1 &
+
+            echo " Application deployed successfully"
