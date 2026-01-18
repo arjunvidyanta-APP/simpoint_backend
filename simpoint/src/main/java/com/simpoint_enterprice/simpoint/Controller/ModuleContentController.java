@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.MODULE_CONTENT;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.MODULE_CONTENT_ID;
+
 @Slf4j
 @RestController
-@RequestMapping("/moduleContent")
+@RequestMapping(MODULE_CONTENT)
 public class ModuleContentController {
     @Autowired
     private ModuleContentService moduleContentService;
@@ -28,8 +31,8 @@ public class ModuleContentController {
         return ResponseEntity.ok(moduleContent);
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<ModuleContentResponse> GetListById(@PathVariable  Long id) {
+    @GetMapping(MODULE_CONTENT_ID)
+    ResponseEntity<ModuleContentResponse> GetListById(@PathVariable Long id) {
         log.info("Get/Fetch- Fetch All Module content with:{}", id);
         ModuleContentResponse moduleContetById = moduleContentService.GetById(id);
         log.info("Get/Fetch- Module Content find with id:{}", id);

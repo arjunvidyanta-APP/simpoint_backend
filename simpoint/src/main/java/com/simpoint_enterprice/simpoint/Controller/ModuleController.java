@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.MODULE;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.MODULE_ID;
+
 @RestController
-@RequestMapping("/module")
+@RequestMapping(MODULE)
 @Slf4j
 public class ModuleController {
 
@@ -27,7 +30,7 @@ public class ModuleController {
         log.info("Get/Module- All Module size:{}",moduleList.size());
         return ResponseEntity.ok(moduleList);
     }
-    @GetMapping("/{id}")
+    @GetMapping(MODULE_ID)
     ResponseEntity<ModuleResponse>GetModuleById(@PathVariable Long id){
         log.info("Get/Module- Fetch module with id");
         ModuleResponse moduleById=moduleService.GetById(id);

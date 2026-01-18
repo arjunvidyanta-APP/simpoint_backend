@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.TOPIC;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.TOPIC_ID;
+
 @Slf4j
 @RestController
-@RequestMapping("topic")
+@RequestMapping(TOPIC)
 public class TopicController {
 
     @Autowired
@@ -38,7 +41,7 @@ public class TopicController {
        List<TopicCategoryResponse> topicCategory=topicCategoryService.getAllTopicCategory();
        return ResponseEntity.ok(topicCategory);
    }
-   @GetMapping("/{id}")
+   @GetMapping(TOPIC_ID)
     public ResponseEntity<TopicCategoryResponse>getTopicCategoryById(@PathVariable Long id){
        log.info("Get/Topic -Fetch topi with id:{}",id);
        TopicCategoryResponse topicCategoryResponse=topicCategoryService.getById(id);

@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.ASSESSMENT;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.ASSESSMENT_ID;
+
 @RestController
 @Slf4j
-@RequestMapping("/assessment")
+@RequestMapping(ASSESSMENT)
 public class AssessmentController {
 
     @Autowired
@@ -28,7 +31,7 @@ public class AssessmentController {
           return ResponseEntity.ok(assessmentResponses);
 
     }
-    @GetMapping("/{id}")
+    @GetMapping(ASSESSMENT_ID)
     ResponseEntity<AssessmentResponse>GetByid(@PathVariable Long id){
          log.info("Get/Assessment- Fetch assessment with id: {}",id);
          AssessmentResponse assessmentResponseByid=assessmentService.getById(id,null);

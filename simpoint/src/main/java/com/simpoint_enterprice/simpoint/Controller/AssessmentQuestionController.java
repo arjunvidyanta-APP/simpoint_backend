@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.ASSESSMENT_QUESTION;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.ASSESSMENT_QUESTION_BY_ASSESSMENT;
+
 @RestController
 @Slf4j
-@RequestMapping("/questionLinktoAssessment")
+@RequestMapping(ASSESSMENT_QUESTION)
 public class AssessmentQuestionController {
 
 
@@ -23,7 +26,7 @@ public class AssessmentQuestionController {
     /**
      * Get all Questions linked to an Assessment
      */
-    @GetMapping("/{assessmentId}/questions")
+    @GetMapping(ASSESSMENT_QUESTION_BY_ASSESSMENT)
     ResponseEntity<List<QuestionResponseDTO>> getQuestionsByAssessment(@PathVariable Long assessmentId) {
         log.info("Get/Link- Fetch all Assessment with question Id");
         List<QuestionResponseDTO> QuestionResponsewithAssessment = assessmentQuestionService.getQuestionsByAssessment(assessmentId);

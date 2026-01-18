@@ -13,30 +13,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.COURSE;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.COURSE_ID;
+
 @RestController
 @Slf4j
-@RequestMapping("/course")
+@RequestMapping(COURSE)
 public class CoursesController {
 
     @Autowired
-     private CourseService courseService;
+    private CourseService courseService;
 
     @GetMapping
-    ResponseEntity<List<CourseResponse>>findAllCourses(){
-           log.info("Get/Course -Fetch all courses");
-           List<CourseResponse>course=courseService.getAllCourse();
-           log.info("Get/Course- course size:{}",course.size());
-           return ResponseEntity.ok(course);
-      }
-
-      @GetMapping("{id}")
-
-    ResponseEntity<CourseResponse>findCourseById(@PathVariable Long id){
-        log.info("Get/Course- Fetch course with id:{}",id);
-        CourseResponse course= courseService.getCourseById(id);
-        log.info("Get/course- Fetch course with id:{}",id);
+    ResponseEntity<List<CourseResponse>> findAllCourses() {
+        log.info("Get/Course -Fetch all courses");
+        List<CourseResponse> course = courseService.getAllCourse();
+        log.info("Get/Course- course size:{}", course.size());
         return ResponseEntity.ok(course);
-      }
+    }
+
+    @GetMapping(COURSE_ID)
+    ResponseEntity<CourseResponse> findCourseById(@PathVariable Long id) {
+        log.info("Get/Course- Fetch course with id:{}", id);
+        CourseResponse course = courseService.getCourseById(id);
+        log.info("Get/course- Fetch course with id:{}", id);
+        return ResponseEntity.ok(course);
+    }
 
 
 }

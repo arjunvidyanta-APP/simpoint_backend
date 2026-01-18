@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.EDITOR;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.EDITOR_ID;
+
 @Slf4j
 @RestController
-@RequestMapping("/editor")
+@RequestMapping(EDITOR)
 public class EditorController {
     @Autowired
     private  EditorService editorService;
@@ -28,7 +31,7 @@ public class EditorController {
         return ResponseEntity.ok(editorResponses);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(EDITOR_ID)
         ResponseEntity<EditorResponse>getEditorById(@PathVariable Long id){
             log.info("GET /Author/{} - Fetching category by id", id);
             EditorResponse editorResponse=editorService.getById(id);

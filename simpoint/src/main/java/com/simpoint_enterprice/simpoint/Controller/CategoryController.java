@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.CATEGORY;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.CATEGORY_ID;
+
 @Slf4j
 @RestController
-@RequestMapping("/category")
+@RequestMapping(CATEGORY)
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -37,7 +40,7 @@ public class CategoryController {
 //    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
 //        return ResponseEntity.ok(categoryService.getCategoryById(id));
 //    }
-     @GetMapping("/{id}")
+     @GetMapping(CATEGORY_ID)
      public ResponseEntity<CategoryResponse>getCategoryById(@PathVariable Long id){
          log.info("GET /category/{} - Fetching category by id", id);
          CategoryResponse response = categoryService.getCategoryById(id);

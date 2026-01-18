@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.LESSON;
+import static com.simpoint_enterprice.simpoint.EndPoint.ApiEndpoints.LESSON_ID;
+
 @Slf4j
 @RestController
-@RequestMapping("/lesson")
+@RequestMapping(LESSON)
 public class LessonController {
     @Autowired
     private LessonService lessonService;
@@ -26,7 +29,7 @@ public class LessonController {
        log.info("Get/Lesson- size of Lesson:{}",list.size());
        return ResponseEntity.ok(list);
     }
-    @GetMapping("/{id}")
+    @GetMapping(LESSON_ID)
     ResponseEntity<LessonResponse>getLessonById(@PathVariable Long id){
          log.info("Get/Lesson- Fetch Lesson wit id:{}",id);
          LessonResponse listId=lessonService.GetById(id);
